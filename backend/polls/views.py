@@ -1,16 +1,16 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Poll, Option, Vote
+from .models import Poll, Choice, Vote  # Changed Option to Choice
 
 def poll_list(request):
     polls = Poll.objects.all()
     polls_data = []
     for poll in polls:
-        options = Option.objects.filter(poll=poll)
+        options = Choice.objects.filter(poll=poll)  # Changed Option to Choice
         poll_data = {
             'id': poll.id,
             'question': poll.question,
-            'options': [{'id': opt.id, 'text': opt.text} for opt in options]
+            'options': [{'id': opt.id, 'text': opt.choice_text} for opt in options]  # Changed opt.text to opt.choice_text
         }
         polls_data.append(poll_data)
     return JsonResponse({'polls': polls_data})
@@ -18,11 +18,11 @@ def poll_list(request):
 def poll_detail(request, poll_id):
     try:
         poll = Poll.objects.get(id=poll_id)
-        options = Option.objects.filter(poll=poll)
+        options = Choice.objects.filter(poll=poll)  # Changed Option to Choice
         return JsonResponse({
             'id': poll.id,
             'question': poll.question,
-            'options': [{'id': opt.id, 'text': opt.text} for opt in options]
+            'options': [{'id': opt.id, 'text': opt.choice_text} for opt in options]  # Changed opt.text to opt.choice_text
         })
     except Poll.DoesNotExist:
         return JsonResponse({'error': 'Poll not found'}, status=404)
@@ -36,15 +36,15 @@ def vote(request, poll_id):
                 return JsonResponse({'error': 'option_id is required'}, status=400)
             
             # Create vote
-            option = Option.objects.get(id=option_id)
-            vote = Vote.objects.create(option=option)
+            option = Choice.objects.get(id=option_id)  # Changed Option to Choice
+            vote = Vote.objects.create(choice=option)  # Changed option=option to choice=option
             
             return JsonResponse({
                 'message': 'Vote recorded successfully!',
                 'vote_id': vote.id,
-                'option': option.text
+                'option': option.choice_text  # Changed option.text to option.choice_text
             })
-        except Option.DoesNotExist:
+        except Choice.DoesNotExist:  # Changed Option to Choice
             return JsonResponse({'error': 'Invalid option_id'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
@@ -53,17 +53,17 @@ def vote(request, poll_id):
 def poll_results(request, poll_id):
     try:
         poll = Poll.objects.get(id=poll_id)
-        options = Option.objects.filter(poll=poll)
+        options = Choice.objects.filter(poll=poll)  # Changed Option to Choice
         
         results = []
         total_votes = 0
         
         for option in options:
-            vote_count = Vote.objects.filter(option=option).count()
+            vote_count = Vote.objects.filter(choice=option).count()  # Changed option=option to choice=option
             total_votes += vote_count
             results.append({
                 'option_id': option.id,
-                'option_text': option.text,
+                'option_text': option.choice_text,  # Changed option.text to option.choice_text
                 'votes': vote_count
             })
         

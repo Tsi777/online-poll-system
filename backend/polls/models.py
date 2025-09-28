@@ -1,63 +1,36 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
 
 class Poll(models.Model):
-    question = models.CharField(max_length=500)
+    question = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    expires_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
-    
-    class Meta:
-        indexes = [
-            models.Index(fields=['is_active', 'expires_at']),
-            models.Index(fields=['created_at']),
-        ]
-        ordering = ['-created_at']
-    
-    @property
-    def is_expired(self):
-        if self.expires_at:
-            return timezone.now() > self.expires_at
-        return False
-    
-    def total_votes(self):
-        return Vote.objects.filter(option__poll=self).count()
-    
+    allows_multiple_choices = models.BooleanField(default=False)
+    ends_at = models.DateTimeField(null=True, blank=True)
+
     def __str__(self):
         return self.question
 
-class Option(models.Model):
-    poll = models.ForeignKey(Poll, related_name='options', on_delete=models.CASCADE)
-    text = models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        indexes = [
-            models.Index(fields=['poll']),
-        ]
-    
-    def vote_count(self):
-        return self.vote_set.count()
-    
+class Choice(models.Model):
+    poll = models.ForeignKey(Poll, related_name='choices', on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=255)
+    votes = models.IntegerField(default=0)
+
     def __str__(self):
-        return f"{self.poll.question} - {self.text}"
+        return self.choice_text
 
 class Vote(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    option = models.ForeignKey(Option, on_delete=models.CASCADE)
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    voter = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    voter_ip = models.GenericIPAddressField(null=True, blank=True)
     voted_at = models.DateTimeField(auto_now_add=True)
-    user_session = models.CharField(max_length=100, blank=True)  # For anonymous voting
-    
+
     class Meta:
-        unique_together = ['user', 'option']
-        indexes = [
-            models.Index(fields=['user', 'option']),
-            models.Index(fields=['option']),
-            models.Index(fields=['user_session']),
-        ]
-    
+        unique_together = ['poll', 'voter']  # Prevent duplicate votes per user
+
     def __str__(self):
-        username = self.user.username if self.user else 'Anonymous'
-        return f"{username} voted for {self.option.text}"
+        return f"Vote for {self.choice.choice_text}"
