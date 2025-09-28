@@ -52,6 +52,7 @@ http://127.0.0.1:8000/api/
 }
 
 2. Get Poll Details
+
 GET /polls/{id}/
 
 Description: Get detailed information about a specific poll.
