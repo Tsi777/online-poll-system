@@ -19,11 +19,13 @@ http://127.0.0.1:8000/api/
 ### Endpoints
 
 #### 1. List All Polls
+
 **GET** `/polls/`
 
 **Description**: Get a list of all available polls with their options and vote counts.
 
 **Response:**
+
 ```json
 {
   "polls": [
@@ -52,6 +54,7 @@ http://127.0.0.1:8000/api/
   ]
 }
 2. Get Poll Details
+
 GET /polls/{id}/
 
 Description: Get detailed information about a specific poll.
@@ -88,6 +91,7 @@ json
   ]
 }
 3. Vote on Poll
+
 POST /polls/{id}/vote/
 
 Description: Cast a vote for a specific option in a poll.
@@ -124,6 +128,7 @@ Error Responses:
 405 Method Not Allowed: {"error": "POST method required"}
 
 4. Get Poll Results
+
 GET /polls/{id}/results/
 
 Description: Get real-time results with percentages for a poll.
@@ -163,6 +168,7 @@ json
   ]
 }
 🛠️ Technology Stack
+
 Backend: Django 4.2 + Django REST Framework
 
 Database: SQLite (development) / PostgreSQL (production)
@@ -200,6 +206,7 @@ python add_sample_data.py
 
 # 8. Start development server
 python manage.py runserver
+
 🎯 Usage
 Access Points:
 API Root: http://127.0.0.1:8000/
