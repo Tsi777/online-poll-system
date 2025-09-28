@@ -13,19 +13,16 @@ A Django REST API backend for an online polling system with real-time results.
 ## 📋 API Documentation
 
 ### Base URL
+
 http://127.0.0.1:8000/api/
-
-
 ### Endpoints
 
 #### 1. List All Polls
-
 **GET** `/polls/`
 
 **Description**: Get a list of all available polls with their options and vote counts.
 
 **Response:**
-
 ```json
 {
   "polls": [
@@ -53,8 +50,8 @@ http://127.0.0.1:8000/api/
     }
   ]
 }
-2. Get Poll Details
 
+2. Get Poll Details
 GET /polls/{id}/
 
 Description: Get detailed information about a specific poll.
@@ -66,8 +63,6 @@ id (integer): The ID of the poll
 Example: GET /api/polls/1/
 
 Response:
-
-json
 {
   "id": 1,
   "question": "What is your favorite programming language?",
@@ -90,8 +85,8 @@ json
     }
   ]
 }
-3. Vote on Poll
 
+3. Vote on Poll
 POST /polls/{id}/vote/
 
 Description: Cast a vote for a specific option in a poll.
@@ -101,14 +96,11 @@ Parameters:
 id (integer): The ID of the poll
 
 Body (form-data):
-
-text
 option_id: 1
+
 Example: POST /api/polls/1/vote/
 
 Success Response (200):
-
-json
 {
   "message": "Vote recorded successfully!",
   "vote_id": 45,
@@ -128,7 +120,6 @@ Error Responses:
 405 Method Not Allowed: {"error": "POST method required"}
 
 4. Get Poll Results
-
 GET /polls/{id}/results/
 
 Description: Get real-time results with percentages for a poll.
@@ -140,8 +131,6 @@ id (integer): The ID of the poll
 Example: GET /api/polls/1/results/
 
 Response:
-
-json
 {
   "poll_id": 1,
   "poll_question": "What is your favorite programming language?",
@@ -168,7 +157,6 @@ json
   ]
 }
 🛠️ Technology Stack
-
 Backend: Django 4.2 + Django REST Framework
 
 Database: SQLite (development) / PostgreSQL (production)
@@ -178,7 +166,6 @@ Authentication: Session-based with IP duplicate prevention
 Documentation: Built-in API docs
 
 📦 Installation & Setup
-
 # 1. Clone repository
 git clone https://github.com/Tsi777/online-poll-system.git
 cd online-poll-system/backend
@@ -214,24 +201,21 @@ API Root: http://127.0.0.1:8000/
 API Documentation: http://127.0.0.1:8000/api/docs/
 
 Admin Interface: http://127.0.0.1:8000/admin/
-
 Testing the API:
-View all polls:
 
+View all polls:
 
 curl http://127.0.0.1:8000/api/polls/
 View specific poll:
 
-
 curl http://127.0.0.1:8000/api/polls/1/
 Vote on a poll:
-
 
 curl -X POST http://127.0.0.1:8000/api/polls/1/vote/ -d "option_id=1"
 View results:
 
-
 curl http://127.0.0.1:8000/api/polls/1/results/
+
 🗃️ Database Models
 Poll: Stores poll questions and metadata
 
@@ -241,9 +225,6 @@ Vote: Records individual votes with IP-based duplicate prevention
 
 👥 Contributors
 Tsi777 - Backend Developer
-
-📄 License
-MIT License 
 
 What Each Section Does:
 API Documentation: Shows exactly how to use each endpoint
